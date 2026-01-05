@@ -280,28 +280,25 @@ export default function BarbershopRegister() {
         }
       }
 
-      // 4. Create barbershop with pending status
-      const { data: barbershopData, error: shopError } = await supabase
-        .from('barbershops')
-        .insert({
-          name: formData.name,
-          slug: formData.slug,
-          whatsapp_number: formData.whatsappNumber || null,
-          logo_url: logoUrl,
-          primary_color: formData.primaryColor,
-          secondary_color: formData.secondaryColor,
-          background_color: formData.backgroundColor,
-          text_color: formData.textColor,
-          active: false, // Not active until approved
-          approval_status: 'pending', // Requires super admin approval
-          owner_email: formData.ownerEmail,
-        })
-        .select()
-        .single();
+      // 4. Create barbershop using RPC function (bypasses RLS)
+      const { data: barbershopId, error: shopError } = await supabase
+        .rpc('create_barbershop', {
+          p_name: formData.name,
+          p_slug: formData.slug,
+          p_whatsapp_number: formData.whatsappNumber || null,
+          p_logo_url: logoUrl,
+          p_primary_color: formData.primaryColor,
+          p_secondary_color: formData.secondaryColor,
+          p_background_color: formData.backgroundColor,
+          p_text_color: formData.textColor,
+          p_owner_email: formData.ownerEmail,
+        });
 
       if (shopError) {
         throw new Error('Falha ao criar barbearia: ' + shopError.message);
       }
+
+      const barbershopData = { id: barbershopId };
 
       // 5. Assign admin role to user (upsert to handle existing role without barbershop_id)
       const { error: roleError } = await supabase

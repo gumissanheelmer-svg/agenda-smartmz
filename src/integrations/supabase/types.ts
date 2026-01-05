@@ -395,6 +395,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_barbershop: {
+        Args: {
+          p_background_color?: string
+          p_logo_url?: string
+          p_name: string
+          p_owner_email?: string
+          p_primary_color?: string
+          p_secondary_color?: string
+          p_slug: string
+          p_text_color?: string
+          p_whatsapp_number?: string
+        }
+        Returns: string
+      }
       get_user_barbershop_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
