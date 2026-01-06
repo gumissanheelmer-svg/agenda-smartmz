@@ -20,7 +20,31 @@ interface BarbershopSettings {
   text_color: string;
   opening_time: string | null;
   closing_time: string | null;
+  business_type: string;
 }
+
+const getBusinessLabels = (type: string) => {
+  switch (type) {
+    case 'salao':
+      return {
+        businessName: 'Nome do Salão',
+        businessLabel: 'Salão de Beleza',
+        slugPlaceholder: 'meu-salao'
+      };
+    case 'salao_barbearia':
+      return {
+        businessName: 'Nome do Estabelecimento',
+        businessLabel: 'Salão & Barbearia',
+        slugPlaceholder: 'meu-estabelecimento'
+      };
+    default:
+      return {
+        businessName: 'Nome da Barbearia',
+        businessLabel: 'Barbearia',
+        slugPlaceholder: 'minha-barbearia'
+      };
+  }
+};
 
 export default function SettingsPage() {
   const { toast } = useToast();
@@ -123,18 +147,20 @@ export default function SettingsPage() {
         <h1 className="text-3xl font-display font-bold text-foreground">Configurações</h1>
         <Card className="border-border/50 bg-card/80">
           <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground">Bem-vindo! Configure sua barbearia para começar.</p>
+            <p className="text-muted-foreground">Bem-vindo! Configure seu negócio para começar.</p>
             <Button 
               className="mt-4" 
               onClick={() => window.location.href = '/register'}
             >
-              Criar Barbearia
+              Criar Negócio
             </Button>
           </CardContent>
         </Card>
       </div>
     );
   }
+
+  const labels = getBusinessLabels(settings.business_type);
 
   return (
     <div className="space-y-6">
@@ -158,7 +184,7 @@ export default function SettingsPage() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="business_name">Nome da Barbearia</Label>
+                <Label htmlFor="business_name">{labels.businessName}</Label>
                 <Input
                   id="business_name"
                   value={settings.name}
@@ -175,7 +201,7 @@ export default function SettingsPage() {
                     value={settings.slug}
                     onChange={(e) => setSettings({ ...settings, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })}
                     className="bg-input border-border"
-                    placeholder="minha-barbearia"
+                    placeholder={labels.slugPlaceholder}
                   />
                 </div>
               </div>
